@@ -18,7 +18,7 @@ env/
 *.egg-info/
 
 # =========================
-# NODE (if used later)
+# NODE
 # =========================
 node_modules/
 npm-debug.log*
@@ -50,3 +50,12 @@ Thumbs.db
 # =========================
 *.log
 logs/
+
+# =========================
+# TERRAFORM
+# =========================
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
