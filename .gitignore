@@ -1,0 +1,52 @@
+# =========================
+# ENV FILES (SECRETS)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+*.egg-info/
+
+# =========================
+# NODE (if used later)
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# DOCKER
+# =========================
+.docker/
+*.tar
+*.tar.gz
+
+# =========================
+# SYSTEM FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / EDITORS
+# =========================
+.vscode/
+.idea/
+*.swp
+
+# =========================
+# LOGS
+# =========================
+*.log
+logs/
