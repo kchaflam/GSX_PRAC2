@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Node / Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Dependencies
+node_modules/
+
+# Virtual enviroments
+venv/
+.env
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Logs
+*.log
+
+# System
+.DS_Store
+Thumbs.db
