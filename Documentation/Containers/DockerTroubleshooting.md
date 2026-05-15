@@ -1,5 +1,66 @@
 # Docker Troubleshooting
 
+## Docker is not installed or not running
+
+Before building or running any container, Docker must be installed and the Docker daemon must be active. If any command returns `docker: command not found` or `Cannot connect to the Docker daemon`, follow the steps below.
+
+### Install Docker
+
+Install Docker Engine using the official convenience script:
+
+```bash
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
+
+Verify the installation was successful:
+
+```bash
+docker --version
+```
+
+### Check and start the Docker service
+
+Check whether the Docker daemon is currently running:
+
+```bash
+sudo systemctl status docker
+```
+
+If it is not running, start it:
+
+```bash
+sudo systemctl start docker
+```
+
+To make Docker start automatically on every boot:
+
+```bash
+sudo systemctl enable docker
+```
+
+### Run Docker without sudo
+
+By default, Docker requires root privileges. To run commands as a regular user, add your user to the `docker` group:
+
+```bash
+sudo usermod -aG docker $USER
+```
+
+Then apply the group change to your current session without logging out:
+
+```bash
+newgrp docker
+```
+
+Confirm everything is working correctly:
+
+```bash
+docker info
+```
+
+---
+
 ## Port already in use
 
 If the port you are trying to map is already occupied on your machine, Docker will refuse to start the container. Use a different host port by changing the left side of the `-p` flag:
@@ -80,65 +141,4 @@ To stop all running containers at once:
 
 ```bash
 docker stop $(docker ps -q)
-```
-
----
-
-## Docker is not installed or not running
-
-Before building or running any container, Docker must be installed and the Docker daemon must be active. If any command returns `docker: command not found` or `Cannot connect to the Docker daemon`, follow the steps below.
-
-### Install Docker
-
-Install Docker Engine using the official convenience script:
-
-```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-```
-
-Verify the installation was successful:
-
-```bash
-docker --version
-```
-
-### Check and start the Docker service
-
-Check whether the Docker daemon is currently running:
-
-```bash
-sudo systemctl status docker
-```
-
-If it is not running, start it:
-
-```bash
-sudo systemctl start docker
-```
-
-To make Docker start automatically on every boot:
-
-```bash
-sudo systemctl enable docker
-```
-
-### Run Docker without sudo
-
-By default, Docker requires root privileges. To run commands as a regular user, add your user to the `docker` group:
-
-```bash
-sudo usermod -aG docker $USER
-```
-
-Then apply the group change to your current session without logging out:
-
-```bash
-newgrp docker
-```
-
-Confirm everything is working correctly:
-
-```bash
-docker info
 ```

@@ -2,16 +2,16 @@
 
 ## Dockerfile explanation
 
-The Dockerfile starts from `nginx:alpine`, a minimal Nginx image based on Alpine Linux. Only the `index.html` file is copied into the Nginx web root, keeping the container contents as small and explicit as possible. The `EXPOSE 80` instruction documents that the container serves traffic on port 80.
+The Dockerfile starts from `nginx:alpine`, a minimal Nginx image based on Alpine Linux. Only the `index.html` file is copied into the Nginx web root, keeping the container contents as small and explicit as possible.
 
 ### Why `nginx:alpine`?
 
 Alpine-based images are significantly smaller than their standard counterparts while still providing full functionality. For a container that only serves static files, there is no reason to carry the extra weight of a larger base image.
 
-| Base image | Size |
-|------------|------|
+| Base image     | Size   |
+| -------------- | ------ |
 | `nginx:latest` | 161 MB |
-| `nginx:alpine` | 62 MB |
+| `nginx:alpine` | 62 MB  |
 
 Switching to the Alpine variant reduces the image size by over 60%, which means faster pulls, less storage usage, and a smaller attack surface.
 
@@ -30,10 +30,6 @@ Using `nginx:alpine` instead of `nginx:latest` is both a size and a security imp
 ### Copy only what is needed
 
 The Dockerfile copies only `index.html` rather than the entire project directory. Avoiding a broad `COPY . .` means build artifacts, configuration files, or any sensitive files that happen to be in the project folder will never end up inside the image unintentionally.
-
-### Explicit port declaration
-
-The `EXPOSE 80` instruction makes it explicit which port the service uses. While it does not enforce any firewall rule on its own, it serves as documentation and prevents accidentally exposing additional ports when the container is run.
 
 ---
 
