@@ -6,7 +6,8 @@ services:
       - "${NGINX_PORT}:${NGINX_INTERNAL_PORT}"
 
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:${NGINX_INTERNAL_PORT}"]
