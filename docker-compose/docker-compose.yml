@@ -1,0 +1,40 @@
+services:
+  nginx:
+    build: ../Containers/Nginx
+
+    ports:
+      - "${NGINX_PORT}:${NGINX_INTERNAL_PORT}"
+
+    depends_on:
+      - backend
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${NGINX_INTERNAL_PORT}"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+    restart: always
+
+  backend:
+    build: ../Containers/Python
+
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_INTERNAL_PORT}"
+
+    environment:
+      - PORT=${BACKEND_INTERNAL_PORT}
+
+    volumes:
+      - app_data:/data
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:${BACKEND_INTERNAL_PORT}"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+    restart: always
+
+volumes:
+  app_data:
