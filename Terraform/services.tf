@@ -25,13 +25,11 @@ resource "kubernetes_service" "nginx" {
       app = "nginx"
     }
 
+    type = "NodePort"
+
     port {
       port        = 80
       target_port = 80
     }
-
-    type = "NodePort"
-
-    node_port = 30080
   }
 }

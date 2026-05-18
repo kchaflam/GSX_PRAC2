@@ -76,7 +76,7 @@ resource "kubernetes_deployment" "nginx" {
           image = var.nginx_image
 
           port {
-            container_port = var.nginx_port_internal
+            container_port = var.nginx_port
           }
         }
       }
