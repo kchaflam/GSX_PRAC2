@@ -31,6 +31,9 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.sha }} ./Containers/Nginx
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.sha }}
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
       - name: Terraform format check
         run: |
           cd Terraform
