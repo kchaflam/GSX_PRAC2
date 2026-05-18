@@ -46,19 +46,40 @@ resource "kubernetes_deployment" "backend" {
   }
 }
 
-resource "kubernetes_service" "nginx" {
+resource "kubernetes_deployment" "nginx" {
   metadata {
     name = "nginx"
-  }
-  spec {
-    selector = {
+    labels = {
       app = "nginx"
     }
-    type = "NodePort"
-    port {
-      port        = var.nginx_port
-      target_port = var.nginx_port
-      node_port   = 30080
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "nginx"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "nginx"
+        }
+      }
+
+      spec {
+        container {
+          name  = "nginx"
+          image = var.nginx_image
+
+          port {
+            container_port = var.nginx_port_internal
+          }
+        }
+      }
     }
   }
 }
