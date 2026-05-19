@@ -14,11 +14,12 @@ The project also covers network architecture design, Kubernetes NetworkPolicies 
 
 ```
 .
-├── Containers/         # Dockerfiles and application source code
-├── Docker-Compose/     # Compose stack definition and environment config
-├── Kubernetes/         # Raw Kubernetes manifest files
-├── Terraform/          # Infrastructure as Code for Kubernetes resources
-└── Documentation/      # All documentation organized by topic
+├── Containers/             # Dockerfiles and application source code
+├── Docker-Compose/         # Compose stack definition and environment config
+├── Kubernetes/             # Raw Kubernetes manifest files
+├── KubernetesPolicies/     # Raw Kubernetes manifest files (separated by dev/prod + network policies)
+├── Terraform/              # Infrastructure as Code for Kubernetes resources
+└── Documentation/          # All documentation organized by topic
 ```
 
 ---
@@ -108,6 +109,5 @@ Covers the network architecture design with IP addressing and segmentation, Kube
 
 ### Other
 
-- [Integration Results](Documentation/Integration/Results.md)
 - [Kevin's Essay](Documentation/Reflection/KevinEssay.md)
 - [Javier's Essay](Documentation/Reflection/JavierEssay.md)
