@@ -27,7 +27,7 @@ kubectl cluster-info
 From the directory containing the manifest files, apply all of them at once. `kubectl apply -f` reads each manifest and creates or updates the corresponding resources in the cluster — Kubernetes then works to match the running state to what the files describe:
 
 ```bash
-kubectl apply -f kubernetes/
+kubectl apply -f Kubernetes/
 ```
 
 Verify all pods are running. It may take a few seconds for them to reach the `Running` state while the images are pulled and the containers start:

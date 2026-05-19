@@ -8,7 +8,7 @@ Minikube must be running and kubectl must be configured before deploying with Te
 
 ## Deploy
 
-All commands are run from the `terraform/` directory.
+All commands are run from the `Terraform/` directory.
 
 Initialize Terraform. This downloads the Kubernetes provider and sets up the working directory. It only needs to be run once, or again if the provider requirements change:
 

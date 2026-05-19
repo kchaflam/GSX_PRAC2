@@ -62,7 +62,7 @@ minikube start
 
 ```bash
 cd terraform
-terraform apply -var="backend_image=kchaflam/backend-gsx:<SHA>" -var="nginx_image=kchaflam/nginx-gsx:<SHA>"
+terraform apply -var="backend_image=kchaflam/backend:<SHA>" -var="nginx_image=kchaflam/nginx:<SHA>"
 ```
 
 4. Verify the updated pods are running the correct image:
