@@ -28,10 +28,10 @@ Preview what Terraform will create or modify without making any changes. Always 
 terraform plan
 ```
 
-To deploy with a specific image tag produced by CI, pass the image variables at apply time. Replace `<SHA>` with the commit SHA from the CI run:
+To deploy with a specific image tag produced by CI, pass the image variables at apply time. Replace `<dockerhub_user>` with the Docker Hub user configured in the GitHub Actions secrets and `<SHA>` with the commit SHA from the CI run:
 
 ```bash
-terraform apply -var="backend_image=kchaflam/backend-gsx:<SHA>" -var="nginx_image=kchaflam/nginx-gsx:<SHA>"
+terraform apply -var="backend_image=<dockerhub_user>/backend-gsx:<SHA>" -var="nginx_image=<dockerhub_user>/nginx-gsx:<SHA>"
 ```
 
 Terraform will print the planned changes and ask for confirmation before applying. Type `yes` to proceed.
@@ -68,7 +68,7 @@ kubectl get configmap app-config -n production -o yaml
 To deploy a new image version, run apply again with the new tag. Terraform will detect that only the image has changed and update only the affected Deployment:
 
 ```bash
-terraform apply -var="backend_image=kchaflam/backend-gsx:<new_SHA>" -var="nginx_image=kchaflam/nginx-gsx:<new_SHA>"
+terraform apply -var="backend_image=<dockerhub_user>/backend-gsx:<new_SHA>" -var="nginx_image=<dockerhub_user>/nginx-gsx:<new_SHA>"
 ```
 
 ---

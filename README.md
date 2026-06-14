@@ -98,6 +98,12 @@ Documents the Terraform configuration for managing Kubernetes resources as code,
 - [CI/CD Pipeline](Documentation/Terraform/TerraformCICD.md)
 - [Terraform Troubleshooting](Documentation/Terraform/TerraformTroubleshooting.md)
 
+### Integration & Operations
+
+End-to-end validation from a clean state, including CI artifacts, Terraform deployment, service checks, scaling, logs, and NetworkPolicy testing.
+
+- [Full Integration Test & Operational Runbook](Documentation/Integration/FullIntegrationTest.md)
+
 ### Network & Identity
 
 Covers the network architecture design with IP addressing and segmentation, Kubernetes NetworkPolicies for enforcing traffic boundaries, and research into DNS, DHCP, NTP, and identity management for a growing organization.

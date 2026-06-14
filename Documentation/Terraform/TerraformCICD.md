@@ -21,13 +21,13 @@ The pipeline triggers on every push to `main` and runs the following steps in or
 **4. Build and push backend image** — builds the backend Docker image from `./Containers/Python` and pushes it to Docker Hub tagged with the commit SHA:
 
 ```
-kchaflam/backend-gsx:<github.sha>
+<dockerhub_user>/backend-gsx:<github.sha>
 ```
 
 **5. Build and push Nginx image** — same as above for the Nginx image from `./Containers/Nginx`:
 
 ```
-kchaflam/nginx-gsx:<github.sha>
+<dockerhub_user>/nginx-gsx:<github.sha>
 ```
 
 **6. Terraform format check** — runs `terraform fmt -check` to verify the Terraform files are correctly formatted. The pipeline fails if any file is not formatted, enforcing consistent style across the codebase.
@@ -62,7 +62,7 @@ minikube start
 
 ```bash
 cd Terraform
-terraform apply -var="backend_image=kchaflam/backend-gsx:<SHA>" -var="nginx_image=kchaflam/nginx-gsx:<SHA>"
+terraform apply -var="backend_image=<dockerhub_user>/backend-gsx:<SHA>" -var="nginx_image=<dockerhub_user>/nginx-gsx:<SHA>"
 ```
 
 4. Verify the updated pods are running the correct image:

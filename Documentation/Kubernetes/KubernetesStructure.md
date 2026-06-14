@@ -6,6 +6,8 @@ Kubernetes manages the deployment, scaling, and availability of containerized ap
 
 This setup deploys Nginx and the Python backend onto a local cluster running on Minikube. Each service is defined through manifest files that describe the desired state — Kubernetes then does the work of making sure the cluster matches that state at all times.
 
+The raw manifests in `Kubernetes/` are the basic Kubernetes version of the deployment. The Terraform configuration builds on the same resources and deploys them into separate `development`, `staging`, and `production` namespaces for the full Infrastructure as Code workflow.
+
 ---
 
 ## Resources

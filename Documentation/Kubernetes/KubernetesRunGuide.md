@@ -30,6 +30,8 @@ From the directory containing the manifest files, apply all of them at once. `ku
 kubectl apply -f Kubernetes/
 ```
 
+These raw manifests deploy into the default namespace and expose Nginx on the fixed NodePort `30080`. The Terraform deployment is the recommended full deployment path and creates separate `development`, `staging`, and `production` namespaces with dynamically assigned NodePorts.
+
 Verify all pods are running. It may take a few seconds for them to reach the `Running` state while the images are pulled and the containers start:
 
 ```bash

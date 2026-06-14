@@ -6,6 +6,8 @@ Kubernetes NetworkPolicies define which pods can communicate with each other and
 
 The policies below enforce the segmentation defined in the network design: environments are isolated, the backend is only reachable from Nginx, and no pod has unrestricted external access.
 
+The manifests included in `KubernetesPolicies/networkpolicies/` apply this enforcement to the `production` namespace, which is the highest-risk environment. The same pattern can be repeated for `development` and `staging` if the cluster is being locked down fully. Terraform already creates the three namespaces, while these policy manifests demonstrate the production segmentation rules explicitly.
+
 ---
 
 ## Default Deny
