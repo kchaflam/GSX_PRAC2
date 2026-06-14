@@ -13,6 +13,7 @@ The practical benefit is that Terraform tracks the current state of the infrastr
 The configuration is split by responsibility rather than keeping everything in one file. One big file works but quickly becomes hard to read — splitting by resource type makes it clear where to look for each part of the setup.
 
 - `main.tf` — provider configuration and Terraform version constraints
+- `namespaces.tf` — Kubernetes namespaces for each environment
 - `deployment.tf` — Deployment resources for Nginx and the backend
 - `services.tf` — Service resources for both applications
 - `configmap.tf` — ConfigMap holding the backend port configuration
@@ -37,6 +38,7 @@ Variables cover anything that might change between runs or environments — main
 | `nginx_image` | Full image reference for Nginx | `kchaflam/nginx-gsx:latest` |
 | `backend_port` | Port the backend listens on | `8080` |
 | `nginx_port` | Port Nginx listens on | `80` |
+| `environments` | Environment names, namespaces and labels | `dev`, `staging`, `prod` |
 
 The image variables default to `latest`, which is fine for quick local testing but should never be used for a real deployment. The `latest` tag gives no indication of what is actually running — it gets overwritten on every push and makes rollbacks impossible. In practice these are always overridden at apply time with the specific SHA tag produced by CI.
 
@@ -44,17 +46,21 @@ The image variables default to `latest`, which is fine for quick local testing b
 
 ## Resources
 
+### Namespaces
+
+Terraform creates three separate namespaces: `development`, `staging`, and `production`. Each environment receives its own copy of the ConfigMap, Deployments, and Services. This keeps the environments isolated while still using the same reusable Terraform code through `for_each`.
+
 ### ConfigMap
 
-Stores the `PORT` value for the backend. The Deployment reads it directly via `config_map_key_ref`, so the value flows from the Terraform variable into the ConfigMap and from there into the container as an environment variable. This keeps configuration centralized and avoids duplicating values across files — if the port needs to change, it changes in one place.
+Stores the `PORT` value for the backend in each namespace. The Deployment reads it directly via `config_map_key_ref`, so the value flows from the Terraform variable into the ConfigMap and from there into the container as an environment variable. This keeps configuration centralized and avoids duplicating values across files — if the port needs to change, it changes in one place.
 
 ### Deployments
 
-Both services run as Deployments with one replica. The image for each is driven by an input variable, which is how the SHA tag from CI gets injected at deploy time without touching the resource definition. The backend also mounts an `emptyDir` volume at `/data` for its log file — this is intentionally not persistent, as covered in the Kubernetes documentation.
+Both services run as Deployments with one replica per environment. The image for each is driven by an input variable, which is how the SHA tag from CI gets injected at deploy time without touching the resource definition. The backend also mounts an `emptyDir` volume at `/data` for its log file — this is intentionally not persistent, as covered in the Kubernetes documentation. Both deployments include resource requests, limits, readiness probes, and liveness probes so the Terraform deployment keeps the same operational behavior as the raw Kubernetes manifests.
 
 ### Services
 
-The backend uses `ClusterIP`, keeping it internal to the cluster. There is no reason to expose it externally since only Nginx needs to reach it, and exposing it unnecessarily increases the attack surface. Nginx uses `NodePort` to accept external traffic. The node port is not hardcoded — after the problems caused by specifying a fixed value, Kubernetes now assigns one automatically from the 30000-32767 range. The assigned port is available as an output so you always know where to reach it after a deploy.
+The backend uses `ClusterIP`, keeping it internal to its namespace. There is no reason to expose it externally since only Nginx needs to reach it, and exposing it unnecessarily increases the attack surface. Nginx uses `NodePort` to accept external traffic. The node port is not hardcoded — after the problems caused by specifying fixed values, Kubernetes now assigns ports automatically from the 30000-32767 range. The assigned ports are available as an output per environment so you always know where to reach each Nginx service after a deploy.
 
 ---
 
@@ -64,8 +70,8 @@ Terraform prints these values after a successful apply:
 
 | Output | Description |
 |--------|-------------|
-| `backend_service` | Name of the backend Service |
-| `nginx_service` | Name of the Nginx Service |
-| `node_port` | Assigned NodePort for the Nginx Service |
+| `backend_service` | Backend Service names by environment |
+| `nginx_service` | Nginx Service names by environment |
+| `nginx_node_ports` | Assigned NodePorts for the Nginx Services by environment |
 
-The `node_port` output is the most useful one in practice. Since the port is assigned dynamically, without this output you would have to run `kubectl get service nginx` every time to find out where Nginx is reachable.
+The `nginx_node_ports` output is the most useful one in practice. Since the ports are assigned dynamically, without this output you would have to run `kubectl get service nginx -n <namespace>` for each environment to find out where Nginx is reachable.

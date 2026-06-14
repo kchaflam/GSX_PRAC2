@@ -23,13 +23,13 @@ jobs:
 
       - name: Build backend image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.sha }} ./Containers/Python
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ github.sha }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-gsx:${{ github.sha }} ./Containers/Python
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-gsx:${{ github.sha }}
 
       - name: Build nginx image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.sha }} ./Containers/Nginx
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ github.sha }}
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-gsx:${{ github.sha }} ./Containers/Nginx
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-gsx:${{ github.sha }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

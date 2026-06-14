@@ -1,8 +1,13 @@
 resource "kubernetes_deployment" "backend" {
+  for_each = var.environments
+
   metadata {
-    name = "backend"
+    name      = "backend"
+    namespace = kubernetes_namespace.environment[each.key].metadata[0].name
+
     labels = {
       app = "backend"
+      env = each.value.env_label
     }
   }
 
@@ -12,6 +17,7 @@ resource "kubernetes_deployment" "backend" {
     selector {
       match_labels = {
         app = "backend"
+        env = each.value.env_label
       }
     }
 
@@ -19,6 +25,7 @@ resource "kubernetes_deployment" "backend" {
       metadata {
         labels = {
           app = "backend"
+          env = each.value.env_label
         }
       }
 
@@ -35,7 +42,7 @@ resource "kubernetes_deployment" "backend" {
             name = "PORT"
             value_from {
               config_map_key_ref {
-                name = kubernetes_config_map.app_config.metadata[0].name
+                name = kubernetes_config_map.app_config[each.key].metadata[0].name
                 key  = "PORT"
               }
             }
@@ -89,10 +96,15 @@ resource "kubernetes_deployment" "backend" {
 }
 
 resource "kubernetes_deployment" "nginx" {
+  for_each = var.environments
+
   metadata {
-    name = "nginx"
+    name      = "nginx"
+    namespace = kubernetes_namespace.environment[each.key].metadata[0].name
+
     labels = {
       app = "nginx"
+      env = each.value.env_label
     }
   }
 
@@ -102,6 +114,7 @@ resource "kubernetes_deployment" "nginx" {
     selector {
       match_labels = {
         app = "nginx"
+        env = each.value.env_label
       }
     }
 
@@ -109,6 +122,7 @@ resource "kubernetes_deployment" "nginx" {
       metadata {
         labels = {
           app = "nginx"
+          env = each.value.env_label
         }
       }
 

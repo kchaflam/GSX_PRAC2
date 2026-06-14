@@ -48,7 +48,7 @@ terraform init
 terraform apply
 ```
 
-Terraform will print the NodePort assigned to Nginx after the apply completes. Use `minikube ip` combined with that port to reach the service. To tear everything down run `terraform destroy`.
+Terraform will deploy the stack into `development`, `staging`, and `production`, then print the NodePort assigned to Nginx in each environment. Use `minikube ip` combined with the port for the environment you want to test. To tear everything down run `terraform destroy`.
 
 ### Option 3 — Kubernetes with raw manifests
 

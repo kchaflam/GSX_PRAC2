@@ -13,3 +13,27 @@ variable "backend_port" {
 variable "nginx_port" {
   default = 80
 }
+
+variable "environments" {
+  description = "Kubernetes environments managed by Terraform."
+
+  type = map(object({
+    namespace = string
+    env_label = string
+  }))
+
+  default = {
+    dev = {
+      namespace = "development"
+      env_label = "dev"
+    }
+    staging = {
+      namespace = "staging"
+      env_label = "staging"
+    }
+    prod = {
+      namespace = "production"
+      env_label = "prod"
+    }
+  }
+}

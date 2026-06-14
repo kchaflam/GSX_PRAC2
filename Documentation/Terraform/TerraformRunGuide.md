@@ -10,6 +10,12 @@ Minikube must be running and kubectl must be configured before deploying with Te
 
 All commands are run from the `Terraform/` directory.
 
+By default, Terraform deploys the same stack into three Kubernetes namespaces:
+
+- `development`
+- `staging`
+- `production`
+
 Initialize Terraform. This downloads the Kubernetes provider and sets up the working directory. It only needs to be run once, or again if the provider requirements change:
 
 ```bash
@@ -34,23 +40,25 @@ Terraform will print the planned changes and ask for confirmation before applyin
 
 ## Verify
 
-After a successful apply, Terraform prints the outputs including the assigned NodePort for Nginx. Use it to reach the service:
+After a successful apply, Terraform prints the outputs including the assigned NodePorts for Nginx in each environment. Use the port for the environment you want to test:
 
 ```bash
-curl http://$(minikube ip):<node_port>
+curl http://$(minikube ip):<environment_node_port>
 ```
 
 Confirm all pods are running:
 
 ```bash
-kubectl get pods
+kubectl get pods -A
 ```
 
 Confirm the Services and ConfigMap were created correctly:
 
 ```bash
-kubectl get services
-kubectl get configmap app-config -o yaml
+kubectl get services -n development
+kubectl get services -n staging
+kubectl get services -n production
+kubectl get configmap app-config -n production -o yaml
 ```
 
 ---
@@ -67,7 +75,7 @@ terraform apply -var="backend_image=kchaflam/backend-gsx:<new_SHA>" -var="nginx_
 
 ## Destroy
 
-To remove all resources created by Terraform from the cluster:
+To remove all resources created by Terraform from the cluster, including the environment namespaces:
 
 ```bash
 terraform destroy

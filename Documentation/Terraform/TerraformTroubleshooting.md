@@ -81,7 +81,7 @@ Then run `terraform plan` to see what differences remain and decide whether to a
 If the CI pipeline fails on the format check step, one or more Terraform files are not correctly formatted. Fix them locally and commit:
 
 ```bash
-cd terraform
+cd Terraform
 terraform fmt
 git add .
 git commit -m "fix: terraform format"
@@ -95,7 +95,7 @@ git push
 If `terraform validate` fails, there is a syntax or configuration error in the Terraform files. Run validate locally to see the full error message:
 
 ```bash
-cd terraform
+cd Terraform
 terraform init -backend=false
 terraform validate
 ```

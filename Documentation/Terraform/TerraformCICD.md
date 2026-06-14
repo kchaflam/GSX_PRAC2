@@ -61,15 +61,15 @@ minikube start
 3. Deploy using Terraform with the SHA tag produced by CI:
 
 ```bash
-cd terraform
-terraform apply -var="backend_image=kchaflam/backend:<SHA>" -var="nginx_image=kchaflam/nginx:<SHA>"
+cd Terraform
+terraform apply -var="backend_image=kchaflam/backend-gsx:<SHA>" -var="nginx_image=kchaflam/nginx-gsx:<SHA>"
 ```
 
 4. Verify the updated pods are running the correct image:
 
 ```bash
-kubectl get pods
-kubectl describe pod <pod-name> | grep Image
+kubectl get pods -A
+kubectl describe pod <pod-name> -n <namespace> | grep Image
 ```
 
 ---
