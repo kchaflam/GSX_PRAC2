@@ -1,10 +1,10 @@
-# Terraform — Documentation
+# Terraform Resource Guide
 
 ## Overview
 
 Terraform is an Infrastructure as Code tool that lets you define infrastructure declaratively — you describe the desired end state and Terraform figures out how to get there. This is the key difference from a procedural tool like Ansible, where you write the steps to execute in order. With Terraform you don't say "create this deployment then create this service" — you say "I want a deployment and a service to exist" and it handles the rest.
 
-The practical benefit is that Terraform tracks the current state of the infrastructure and only applies what needs to change. Running it twice with no changes does nothing. If the cluster is wiped, a single `terraform apply` reproduces it exactly. This makes the setup fully version-controlled and reproducible by anyone with access to the repo and a running cluster.
+The operational benefit is that Terraform tracks the current state of the infrastructure and only applies what needs to change. Running it twice with no changes does nothing. If the cluster is wiped, a single `terraform apply` reproduces it exactly. This makes the setup fully version-controlled and reproducible by anyone with access to the repo and a running cluster.
 
 ---
 
@@ -56,7 +56,7 @@ Stores the `PORT` value for the backend in each namespace. The Deployment reads 
 
 ### Deployments
 
-Both services run as Deployments with one replica per environment. The image for each is driven by an input variable, which is how the SHA tag from CI gets injected at deploy time without touching the resource definition. The backend also mounts an `emptyDir` volume at `/data` for its log file — this is intentionally not persistent, as covered in the Kubernetes documentation. Both deployments include resource requests, limits, readiness probes, and liveness probes so the Terraform deployment keeps the same operational behavior as the raw Kubernetes manifests.
+Both services run as Deployments with one replica per environment. The image for each is driven by an input variable, which is how the SHA tag from CI gets injected at deploy time without touching the resource definition. The backend also mounts an `emptyDir` volume at `/data` for its log file. This is intentionally not persistent and is documented in the Kubernetes resource guide. Both deployments include resource requests, limits, readiness probes, and liveness probes so the Terraform deployment keeps the same operational behavior as the raw Kubernetes manifests.
 
 ### Services
 

@@ -1,4 +1,4 @@
-# CI/CD Pipeline — Documentation
+# CI/CD Pipeline
 
 ## Overview
 
@@ -8,7 +8,7 @@ This split exists because GitHub Actions runners are hosted by GitHub and have n
 
 ---
 
-## CI — What happens on every push
+## CI Workflow
 
 The pipeline triggers on every push to `main` and runs the following steps in order:
 
@@ -46,7 +46,7 @@ Using `latest` as the only tag would make it impossible to know what is actually
 
 ---
 
-## CD — Local deployment workflow
+## Local Deployment Workflow
 
 Once the CI pipeline passes, the deployment to Minikube is done manually on the local machine:
 

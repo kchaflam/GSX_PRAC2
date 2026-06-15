@@ -20,7 +20,7 @@ In an organization, DHCP eliminates the operational overhead of tracking which I
 
 ### How it works
 
-When a device joins a network it broadcasts a discovery message. The DHCP server responds with an offer containing an available IP address and configuration. The device requests the offered address, and the server confirms the lease — a time-limited assignment after which the device must renew or release it. This four-step process (Discover, Offer, Request, Acknowledge) happens automatically and takes milliseconds.
+When a device joins a network it broadcasts a discovery message. The DHCP server responds with an offer containing an available IP address and configuration. The device requests the offered address, and the server confirms the lease — a time-limited allocation after which the device must renew or release it. This four-step process (Discover, Offer, Request, Acknowledge) happens automatically and takes milliseconds.
 
 ---
 

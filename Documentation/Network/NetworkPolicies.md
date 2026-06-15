@@ -294,15 +294,3 @@ NetworkPolicies are enforced by the cluster network plugin (CNI). Not all CNI pl
 NetworkPolicies are namespace-scoped. A `podSelector` only selects pods inside the namespace where the policy exists unless a `namespaceSelector` is used. This is why the same policy pattern is repeated for `development`, `staging`, and `production`.
 
 Another important limitation is that NetworkPolicies control pod network traffic, not user permissions. They do not replace Kubernetes RBAC, Secrets management, authentication, or application-level authorization. They are one security layer in a defense-in-depth design.
-
----
-
-## References
-
-- Kubernetes documentation: [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
-- Kubernetes documentation: [Declare Network Policy](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy/)
-- Kubernetes documentation: [DNS for Services and Pods](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/)
-- Calico documentation: [Get started with Kubernetes network policy](https://docs.tigera.io/calico/latest/network-policy/get-started/kubernetes-policy/kubernetes-network-policy)
-- Project network design: `Documentation/Network/NetworkDesign.md`
-- Policy manifests: `KubernetesPolicies/networkpolicies/`
-- Namespace manifests: `KubernetesPolicies/namespaces.yml`

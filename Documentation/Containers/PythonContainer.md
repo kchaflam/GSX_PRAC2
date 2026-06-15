@@ -1,4 +1,4 @@
-# Python HTTP Server Container — Documentation
+# Python HTTP Server Container
 
 ## Dockerfile explanation
 

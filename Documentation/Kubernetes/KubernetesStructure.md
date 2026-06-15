@@ -1,4 +1,4 @@
-# Kubernetes — Documentation
+# Kubernetes Resource Guide
 
 ## Overview
 

@@ -1,4 +1,4 @@
-# Docker Compose — Documentation
+# Docker Compose Resource Guide
 
 ## Overview
 

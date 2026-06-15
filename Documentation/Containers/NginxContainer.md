@@ -1,4 +1,4 @@
-# Nginx Container — Documentation
+# Nginx Container
 
 ## Dockerfile explanation
 
