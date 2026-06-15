@@ -29,6 +29,14 @@ Switching from `python:3.12-slim` to `python:3.12-alpine` cuts the image size fr
 
 That said, Alpine uses `musl libc` instead of the standard `glibc`. This is not an issue for this application since it uses only the Python standard library, but it is something to keep in mind if external packages with C extensions are added later, as some may require additional build dependencies on Alpine.
 
+### Multistage build decision
+
+A multistage build is not needed for the current backend because there is no compilation step and no external dependency installation. The runtime image only needs the Python interpreter and `app.py`. If the backend later adds compiled dependencies or frontend assets, a builder stage should be added so build tools do not remain in the final runtime image.
+
+### Layer ordering
+
+The Dockerfile copies only `app.py` before creating the runtime user and directories. Since there is no `pip install` step, the cache impact is small. If dependencies are added later, the recommended order is to copy `requirements.txt`, install dependencies, and only then copy application code. That keeps dependency layers cached when only the application source changes.
+
 ### Non-root user
 
 By default, processes inside a container run as root. If an attacker were to exploit a vulnerability in the application, running as root would give them full control over the container's filesystem. Creating a dedicated user and group and switching to them with `USER appuser` ensures the application only has access to what it actually needs. Ownership of both `/app` and `/data` is explicitly assigned to that user so the application can read its own files and write persistent logs without elevated privileges.

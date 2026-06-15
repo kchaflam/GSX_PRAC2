@@ -74,6 +74,24 @@ kubectl describe pod <pod-name> -n <namespace> | grep Image
 
 ---
 
+## Promotion Policy
+
+The same image SHA is used across `development`, `staging`, and `production`. The image is built once by CI and then referenced from Terraform using the `backend_image` and `nginx_image` variables.
+
+Production should not be considered ready until staging has passed the operational checks:
+
+1. CI pipeline is green.
+2. Terraform plan shows the expected image SHA and environment resources.
+3. `development` pods are running and responding.
+4. `staging` pods are running and responding.
+5. Nginx in `staging` can reach the backend through the `backend` Service.
+6. NetworkPolicies are present in `staging`.
+7. Only then is the production NodePort tested or exposed for use.
+
+This keeps one codebase for all environments while still preserving a promotion order: build once, validate in lower environments, then use the same artifact in production.
+
+---
+
 ## Secrets management
 
 The pipeline uses two GitHub repository secrets that must be configured before the workflow can run:

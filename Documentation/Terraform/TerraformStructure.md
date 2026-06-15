@@ -18,6 +18,7 @@ The configuration is split by responsibility rather than keeping everything in o
 - `services.tf` — Service resources for both applications
 - `configmap.tf` — ConfigMap holding the backend port configuration
 - `variables.tf` — input variable definitions with defaults
+- `environments.tfvars.example` — example environment map that can be passed with `-var-file`
 - `outputs.tf` — values printed after a successful apply
 
 ---
@@ -41,6 +42,27 @@ Variables cover anything that might change between runs or environments — main
 | `environments` | Environment names, namespaces and labels | `dev`, `staging`, `prod` |
 
 The image variables default to `latest`, which is fine for quick local testing but should never be used for a real deployment. The `latest` tag gives no indication of what is actually running — it gets overwritten on every push and makes rollbacks impossible. In practice these are always overridden at apply time with the specific SHA tag produced by CI.
+
+---
+
+## Multiple Environments
+
+The `environments` variable defines the environment map used by Terraform. By default it contains:
+
+- `dev` -> namespace `development`
+- `staging` -> namespace `staging`
+- `prod` -> namespace `production`
+
+All Kubernetes resources use `for_each = var.environments`, so the same Terraform code creates one copy of each resource per environment. This is how the stack is deployed to multiple environments with one codebase instead of maintaining separate Terraform files for dev, staging, and production.
+
+The default values live in `variables.tf`. If the environment list needs to be changed, copy `environments.tfvars.example` and pass it explicitly:
+
+```bash
+cp environments.tfvars.example environments.tfvars
+terraform apply -var-file="environments.tfvars"
+```
+
+Using a tfvars file keeps environment-specific values outside the resource definitions. The resource files stay reusable, while the environment map can be adjusted for local testing or future deployments.
 
 ---
 

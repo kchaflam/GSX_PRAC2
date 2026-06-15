@@ -35,7 +35,7 @@ The policies are kept in separate files by responsibility. This makes the intent
 
 | Source | Destination | Port | Result | Reason |
 | ------ | ----------- | ---- | ------ | ------ |
-| Internet / host | Nginx in any environment | 80 | Allowed | `allow-external-to-nginx` exposes the web entry point |
+| Internet / host | Nginx in any environment | 80 | Allowed | `allow-external-to-nginx` uses `ipBlock` plus port 80 for the web entry point |
 | Nginx | Backend in the same namespace | 8080 | Allowed | `allow-nginx-to-backend` and `allow-nginx-egress-to-backend` define the app path |
 | Any pod | Kubernetes DNS | 53 TCP/UDP | Allowed | `allow-dns-egress` keeps service discovery working |
 | Backend | Internet / other namespaces | Any | Blocked | no egress exception exists for backend |
@@ -109,12 +109,15 @@ spec:
   policyTypes:
     - Ingress
   ingress:
-    - ports:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+      ports:
         - protocol: TCP
           port: 80
 ```
 
-Only pods labelled `app: nginx` are selected by this rule. The backend is not exposed externally.
+Only pods labelled `app: nginx` are selected by this rule. The `ipBlock` allows external clients from any IPv4 address, but only on TCP port 80. In a restricted partner setup, `0.0.0.0/0` could be replaced with a partner CIDR such as `10.0.10.0/24`.
 
 This does not expose the backend directly. External clients must enter through Nginx first, which matches the DMZ idea from the network design: public traffic reaches the edge service, and internal services stay private.
 

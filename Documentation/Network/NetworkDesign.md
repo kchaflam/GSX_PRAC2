@@ -78,6 +78,49 @@ The main risk of this design is that the management subnet becomes a high-value 
 
 ---
 
+## VPN Connectivity Between Offices
+
+If the organization opens a second office, the recommended design is a site-to-site VPN between office networks and the central management/DMZ entry points. The VPN should not flatten the network or make every subnet reachable from every location. Instead, routes should be limited by purpose:
+
+- office users can reach internal management entry points such as a jump host or deployment dashboard
+- operations users can reach management services after authentication
+- partner and contractor traffic should terminate in the partners subnet or DMZ, not directly in production
+- production, staging, and development should remain isolated even if users connect through VPN
+
+The VPN should require MFA and should log connection metadata. For a small organization this can be implemented with a managed VPN service or a firewall/router that supports site-to-site tunnels. The important design principle is that VPN access is an entry point into controlled subnets, not a bypass around segmentation.
+
+---
+
+## Exposing Services to External Partners
+
+External partners should not receive direct access to internal services or Kubernetes backend Services. The preferred path is:
+
+1. expose a public or partner-specific endpoint in the DMZ
+2. terminate TLS at the edge
+3. authenticate the partner using SSO, API keys, mTLS, or another controlled mechanism
+4. forward only the required traffic to the internal service
+5. log all partner requests
+
+For this stack, Nginx is the only externally exposed service. If a partner needed access to a specific API, the API should be exposed through Nginx or an ingress gateway, not by exposing the backend Service directly. The partner subnet (`10.0.10.0/24`) is reserved for controlled partner access and should only be allowed to reach specific DMZ endpoints on specific ports.
+
+---
+
+## CIDR and Port Rules
+
+The network design is based on allowing traffic by source, destination, and port rather than by broad environment access. Examples:
+
+| Source | Destination | Ports | Reason |
+| ------ | ----------- | ----- | ------ |
+| Internet | DMZ / Nginx | 80, 443 | public web entry point |
+| DMZ / Nginx | production backend | 8080 | application traffic |
+| Management | all environments | restricted admin ports | deployment, monitoring, troubleshooting |
+| Partners | partner DMZ endpoint | agreed API ports only | controlled external integration |
+| Development | production | none | prevents test workloads from reaching production |
+
+In Kubernetes, this idea is implemented with NetworkPolicies. The current policies allow Nginx to receive traffic on port 80, allow Nginx to reach backend pods on port 8080 inside the same namespace, and allow DNS on port 53. Everything else is blocked by default-deny policies.
+
+---
+
 ## Security Analysis
 
 ### What could go wrong

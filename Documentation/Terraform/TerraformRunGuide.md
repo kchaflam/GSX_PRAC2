@@ -16,6 +16,8 @@ By default, Terraform deploys the same stack into three Kubernetes namespaces:
 - `staging`
 - `production`
 
+The environment list comes from the `environments` variable. The default map is defined in `variables.tf`, and `environments.tfvars.example` shows the same structure as an external tfvars file.
+
 Initialize Terraform. This downloads the Kubernetes provider and sets up the working directory. It only needs to be run once, or again if the provider requirements change:
 
 ```bash
@@ -26,6 +28,12 @@ Preview what Terraform will create or modify without making any changes. Always 
 
 ```bash
 terraform plan
+```
+
+To review the plan with an explicit environment file:
+
+```bash
+terraform plan -var-file="environments.tfvars"
 ```
 
 To deploy with a specific image tag produced by CI, pass the image variables at apply time. Replace `<dockerhub_user>` with the Docker Hub user configured in the GitHub Actions secrets and `<SHA>` with the commit SHA from the CI run:
@@ -60,6 +68,30 @@ kubectl get services -n staging
 kubectl get services -n production
 kubectl get configmap app-config -n production -o yaml
 ```
+
+### Validate staging before production
+
+Use the same image tag in every environment. The image should be built once, tagged with the commit SHA, and then promoted through the environments without rebuilding it. This ensures staging tests the exact artifact that production will use.
+
+Recommended validation order:
+
+1. Confirm `development` pods and services are healthy.
+2. Test the application path in `development`.
+3. Confirm `staging` pods and services are healthy.
+4. Test Nginx and backend communication in `staging`.
+5. Apply or verify NetworkPolicies.
+6. Only after staging passes, validate the `production` NodePort and production backend.
+
+Useful commands:
+
+```bash
+kubectl get pods -n staging
+kubectl get services -n staging
+kubectl exec -it <staging-nginx-pod> -n staging -- wget -qO- http://backend:8080
+terraform output nginx_node_ports
+```
+
+If staging fails, do not use the production endpoint. Fix the code or configuration, build a new image tag, and repeat the promotion flow with the new SHA.
 
 ---
 

@@ -27,6 +27,14 @@ This application has no external dependencies beyond Nginx itself, which is alre
 
 Using `nginx:alpine` instead of `nginx:latest` is both a size and a security improvement. A smaller image contains fewer packages, which directly reduces the number of potential vulnerabilities. A full Debian-based image ships with many tools and libraries that are never used in a container serving static files — each of those is an unnecessary risk.
 
+### Multistage build decision
+
+A multistage build is useful when an image needs a build phase, for example compiling assets or installing build-only dependencies. This Nginx image only serves a static `index.html` file, so there is no separate build artifact to copy into a runtime image. Adding a multistage build here would make the Dockerfile more complex without reducing the final image.
+
+### Layer ordering
+
+The Dockerfile keeps the layer order simple and stable: start from the base image, then copy the static file. Since there are no package installation steps, dependency layers do not need to be rebuilt. If more static files or generated assets are added later, build-heavy steps should come before frequently changing content so Docker can reuse cached layers.
+
 ### Copy only what is needed
 
 The Dockerfile copies only `index.html` rather than the entire project directory. Avoiding a broad `COPY . .` means build artifacts, configuration files, or any sensitive files that happen to be in the project folder will never end up inside the image unintentionally.

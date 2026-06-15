@@ -1,0 +1,14 @@
+environments = {
+  dev = {
+    namespace = "development"
+    env_label = "dev"
+  }
+  staging = {
+    namespace = "staging"
+    env_label = "staging"
+  }
+  prod = {
+    namespace = "production"
+    env_label = "prod"
+  }
+}

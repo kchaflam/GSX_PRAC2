@@ -67,6 +67,12 @@ Without resource limits, a container can consume all available CPU and memory on
 
 The backend gets more resources since it handles application logic and file I/O, while Nginx only serves static files. These values are conservative for a local Minikube setup and should be adjusted based on observed usage in production. Setting limits too low can cause containers to be throttled or killed unexpectedly — if a pod keeps restarting without an obvious reason, an exceeded memory limit is worth checking first with `kubectl describe pod`.
 
+### Why probes and limits matter
+
+Readiness probes protect users from startup failures by keeping a pod out of Service endpoints until it can actually respond. Liveness probes protect availability by letting Kubernetes restart a container that is stuck but still running. Resource requests help the scheduler place pods on nodes with enough capacity, while limits prevent one container from exhausting CPU or memory for the whole node.
+
+Together, these settings make the deployment more predictable: Kubernetes knows when a pod is ready, when it should be restarted, and how much capacity it is expected to use.
+
 ---
 
 ## Storage
