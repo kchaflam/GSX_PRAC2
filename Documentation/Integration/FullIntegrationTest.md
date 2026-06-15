@@ -11,7 +11,7 @@ The expected final state is:
 - Nginx is externally reachable through a NodePort in each environment.
 - The backend remains internal and is reached through the Kubernetes Service.
 - Resource limits, readiness probes, liveness probes, and the backend `/data` volume are present.
-- NetworkPolicies can be applied to enforce segmentation, especially around production.
+- NetworkPolicies enforce segmentation across `development`, `staging`, and `production`.
 
 Prometheus and Grafana are not included in this delivery. Observability is handled at this level through Kubernetes health probes, service status, pod logs, resource descriptions, and CI validation.
 
@@ -182,11 +182,23 @@ kubectl apply -f KubernetesPolicies/namespaces.yml
 kubectl apply -f KubernetesPolicies/networkpolicies/
 ```
 
+Confirm each namespace has the expected policies:
+
+```bash
+kubectl get networkpolicy -n development
+kubectl get networkpolicy -n staging
+kubectl get networkpolicy -n production
+```
+
+Each namespace should include `default-deny-all`, `allow-dns-egress`, `allow-external-to-nginx`, `allow-nginx-to-backend`, and `allow-nginx-egress-to-backend`.
+
 Test an allowed path:
 
 ```bash
 kubectl exec -it <nginx-pod> -n production -- wget -qO- http://backend:8080
 ```
+
+The same-namespace path should also work in `development` and `staging` when using the Nginx pod from that namespace.
 
 Test a blocked path, for example a development pod attempting to reach production:
 
@@ -195,6 +207,13 @@ kubectl exec -it <dev-pod> -n development -- wget -qO- http://backend.production
 ```
 
 A blocked connection usually times out. NetworkPolicies require a CNI plugin that supports them, such as Calico; otherwise Kubernetes will accept the policy objects but not enforce the traffic rules.
+
+Interpretation:
+
+- if same-namespace Nginx to backend works, the intended application path is allowed
+- if cross-namespace requests time out, environment isolation is working
+- if DNS names fail to resolve, check `allow-dns-egress`
+- if blocked traffic succeeds, check whether Minikube is using a CNI that enforces NetworkPolicies
 
 ---
 
