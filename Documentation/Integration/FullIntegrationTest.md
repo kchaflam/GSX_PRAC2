@@ -35,6 +35,12 @@ minikube delete
 minikube start
 ```
 
+If NetworkPolicies are going to be enforced do this start instead to get Calico ready:
+
+```bash
+minikube start --cni=calico
+```
+
 Verify that old application resources are gone:
 
 ```bash
@@ -250,3 +256,11 @@ terraform plan
 ```
 
 ---
+
+## 9. Final results
+
+After all of these operations the system should be up and running without any issues. This process shouldn't take more than a few minutes. To give an approximation, no more than five minutes is needed to have everything listed here running and verified. 
+
+To do a final check of the system, there are screenshots in this folders with the result of the verification steps. 
+
+As a final reminder, this is a operational runbook so if any issues not listed in here appear you should check the troubleshooting guide of the problematic module.
